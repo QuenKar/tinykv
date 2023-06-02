@@ -102,7 +102,8 @@ func (server *Server) RawScan(_ context.Context, req *kvrpcpb.RawScanRequest) (*
 	defer it.Close()
 
 	num := 0
-	for it.Seek([]byte{1}); it.Valid(); it.Next() {
+	sk := req.StartKey
+	for it.Seek(sk); it.Valid(); it.Next() {
 		if num >= int(req.GetLimit()) {
 			break
 		}
