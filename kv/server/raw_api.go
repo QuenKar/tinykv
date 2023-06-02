@@ -15,6 +15,7 @@ func (server *Server) RawGet(_ context.Context, req *kvrpcpb.RawGetRequest) (*kv
 
 	resp := new(kvrpcpb.RawGetResponse)
 	reader, err := server.storage.Reader(req.GetContext())
+	defer reader.Close()
 
 	val, err := reader.GetCF(req.GetCf(), req.GetKey())
 	if err != nil {
@@ -91,6 +92,7 @@ func (server *Server) RawScan(_ context.Context, req *kvrpcpb.RawScanRequest) (*
 	resp := new(kvrpcpb.RawScanResponse)
 
 	reader, err := server.storage.Reader(req.GetContext())
+	defer reader.Close()
 	if err != nil {
 		resp.Error = err.Error()
 		return nil, err
